@@ -1,8 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+		<!-- META -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- NAME -->
+		<title>DAZ Develop</title>
+		
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		
+		<!-- PARSE -->
+		<script src="http://www.parsecdn.com/js/parse-1.6.7.min.js"></script>
+		
+		<!-- JAVA SCRIPTS -->		
+		<script>
+			Parse.initialize("4ijPIKyJy3mV0PekhrSr6gGssNFpbr2cNnDrwyQj", "xfSO35Gg51m5Jr0G5SyqGmokdkOy7OO6zqhA8hWv");
+			// emailSubmitted function is called when an email is added to the newsletter subscription.
+			function emailSubmitted() {
+				// Gets email
+				var submittedEmail = document.getElementById("email").value;
+				
+				var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+				// Checks if email is a valid email
+				var reply = re.test(submittedEmail);
+				// If true
+				if (reply == true) {
+					// Gets the Parse object "emailList"
+					var emailList = Parse.Object.extend("emailList");
+					// Creates query
+					var query = new Parse.Query(emailList);
+					// Sets query
+					query.equalTo("email", submittedEmail);
+					// Queries
+					query.find({
+						// If query succeeded
+						success: function(results) {
+							// If results.length equals 0 | If there is no email existing
+							if (results.length == 0) {
+								// Creates a new instance of emailList
+								var newEmail = new emailList();
+								// Saves newEmail
+								newEmail.save({
+									// Sets email to submittedEmail
+									email: submittedEmail
+								}, {
+									// If success
+									success: function(newEmail) {
+										// Save successful. Display success.
+										document.getElementById("subscriptionSuccess").style.display = 'block';
+										document.getElementById("subscriptionFailure").style.display = 'none';
+										document.getElementById("subscriptionWarning").style.display = 'none';
+										document.getElementById("subscriptionExists").style.display = 'none';
+									}, 
+									// If failure
+									error: function(newEmail) {
+										// Save failed. Display warning.
+										document.getElementById("subscriptionSuccess").style.display = 'none';
+										document.getElementById("subscriptionFailure").style.display = 'none';
+										document.getElementById("subscriptionWarning").style.display = 'block';
+										document.getElementById("subscriptionExists").style.display = 'none';
+									}
+								});
+							
+							} else {
+								document.getElementById("subscriptionSuccess").style.display = 'none';
+								document.getElementById("subscriptionFailure").style.display = 'none';
+								document.getElementById("subscriptionWarning").style.display = 'none';
+								document.getElementById("subscriptionExists").style.display = 'block';
+							}
+						},
+						error: function(error) {
+							// Error finding class. Display failure[Internal]
+							document.getElementById("subscriptionSuccess").style.display = 'none';
+							document.getElementById("subscriptionFailure").style.display = 'none';
+							document.getElementById("subscriptionWarning").style.display = 'block';
+							document.getElementById("subscriptionExists").style.display = 'none';
+						}
+					});
+				// If false
+				} else {
+					// Not a valid email. Display failure.
+					document.getElementById("subscriptionSuccess").style.display = 'none';
+					document.getElementById("subscriptionFailure").style.display = 'block';
+					document.getElementById("subscriptionWarning").style.display = 'none';
+					document.getElementById("subscriptionExists").style.display = 'none';
+				}
+			}
+		</script>
 	</head>
-	<body>
-		<h1>Hello World</h1>
+	<body style="background-color:#1EB6EA;">
+			<!-- NAV BAR -->
+			<nav class="navbar navbar-inverse navbar-fixed-top">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="nav navbar-brand" href="http://dazdevelop.parseapp.com">Dazzling Development</a>
+					</div>
+					<div class="collapse navbar-collapse" id="myNavbar">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="./index.html">Home</a></li>
+							<li><a href="./apps.html">Apps</a></li>
+							<li><a href="./news.html">News</a></li>
+							<li><a href="./blog.html">Blog</a></li>
+							<li><a href="./contact.html">Contact</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right">
+							<li><a class="twitter-follow-button" href="https://twitter.com/DAZDevelop">Follow @DAZDevelop</a><li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<!-- LOGO -->
+			<center><br><br><br><br><br><br>
+				<nav>
+					<img src="img/daz-medium-black.png" class="img-rounded" alt="DAZ Logo" width="434" height="300">
+					<h1 style="color:white;"><b>Dazzling iOS and OSX Development!</b></h1>
+				</nav>
+			</center><br><br><br><br><br><br>
+			<center>
+			
+			<!-- Newsletter Subscription -->
+			<div class="container">
+				<h2 style="color:white;">Subscribe to the Newsletter!</h2>
+				<h5 style="color:white;">(No Spam! Ever!)</h5>
+					<input placeholder="dazzle@example.com" type="email" class="form-control" id="email"><br>
+					<button type="button" class="btn btn-success btn-lg" onclick="emailSubmitted()">Submit</button><br><br>
+					<div hidden class="alert alert-success" id="subscriptionSuccess">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Success!</strong> Your email has been added!
+					</div>
+					<div hidden class="alert alert-danger" id="subscriptionFailure">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Failure!</strong> That isn't a real email!
+					</div>
+					<div hidden class="alert alert-warning" id="subscriptionWarning">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Error!</strong> An internal error has occurred!
+					</div>
+					<div hidden class="alert alert-warning" id="subscriptionExists">
+						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+						<strong>Hey!</strong> You've already subscribed!
+					</div>
+			</div>
+			</center>
 	</body>
 </html>
